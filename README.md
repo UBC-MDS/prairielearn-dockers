@@ -18,3 +18,7 @@ PrairieLearn Workspaces require a Docker image with the relevant IDE and languag
 5. Sync questions in PrairieLearn site
 6. Sync Docker image to pull the new tag
 7. Open Workspace question and test changes
+
+### Updating Base image
+
+1. Make sure to update tag in all Dockerfiles

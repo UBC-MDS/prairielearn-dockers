@@ -3,7 +3,7 @@
 # Can be triggered by either pushing a commit that changes the `Dockerfile`, 
 # or manually dispatching the workflow.
 
-name: Publish Docker image
+name: Publish Docker image (Base R)
 
 on: 
   workflow_dispatch:

@@ -3,13 +3,13 @@
 # Can be triggered by either pushing a commit that changes the `Dockerfile`, 
 # or manually dispatching the workflow.
 
-name: Publish Docker image (Base Python)
+name: Publish Docker image (531 Python)
 
 on: 
   workflow_dispatch:
   push: 
     paths: 
-      - 'base-python/Dockerfile'
+      - '531/python/Dockerfile'
       
 jobs:
   push_to_registry:
@@ -29,7 +29,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
         with:
-          images: ubcmds/base-python
+          images: ubcmds/531-python
           tags: |
             type=raw, value={{sha}},enable=${{github.ref_type != 'tag' }}
             type=raw, value=latest
@@ -37,8 +37,8 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@3b5e8027fcad23fda98b2e3ac259d8d67585f671
         with:
-          context: ./base-python
-          file: base-python/Dockerfile
+          context: ./531/python
+          file: 531/python/Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
