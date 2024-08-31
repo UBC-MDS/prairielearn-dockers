@@ -8,7 +8,7 @@ PrairieLearn Workspaces require a Docker image with the relevant IDE and languag
 
 #### Scratchpads
 
-Due to limitations in how simulataneous Workspaces operate (specifically RStudio - see [FAQ](#q4-my-rstudio-workspaces-keep-refreshing-on-their-own)), you may not be able have multiple Workspaces open during a quiz. In the future, Workspaces may be switched to a singular IDE for both languages (Python and R). Until then, the recommended solution for courses requiring RStudio workspaces is to create a scratchpad question. The existing course specific workspace images have been designed to work in this instance. Therefore, the only changes required are in the course repository. Please see the appropriate heading for scratchpads in the [Instructor Guide](https://github.com/UBC-MDS/prairielearn-instructor-guide) for how to configure a scratchpad.
+Due to limitations in how simulataneous Workspaces operate (specifically RStudio - see [FAQ](#q4-my-rstudio-workspaces-keep-refreshing-on-their-own)), you may not be able have multiple Workspaces open during a quiz. In the future, Workspaces may be switched to a singular IDE for both languages (Python and R). Until then, the recommended solution for courses requiring RStudio workspaces is to create a Scratchpad question. The existing course specific workspace images have been designed to work in this instance. Therefore, the only changes required are in the course repository. Please see the appropriate heading for Scratchpads in the [Instructor Guide](https://github.com/UBC-MDS/prairielearn-instructor-guide) for how to configure a Scratchpad.
 
 #### External Autograder
 
