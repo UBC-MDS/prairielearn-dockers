@@ -6,6 +6,10 @@ This repository is intended as a collection of Docker Images that are used by th
 
 PrairieLearn Workspaces require a Docker image with the relevant IDE and languages installed. The PrairieLearn team provides a base image for both [Python (with Jupyter Lab)](https://hub.docker.com/r/prairielearn/workspace-jupyterlab-python) and [R (with RStudio)](https://hub.docker.com/r/prairielearn/workspace-rstudio). This repository contains the MDS base Dockerfile which provides some additional configuration requirements that are standard across all courses (namely, autosave functionality) for both images. It also contains course specific Dockerfiles to allow instructors to install packages that are specific for that course (e.g. SciPy or palmerpenguins).
 
+#### Scratchpads
+
+Due to limitations in how simulataneous Workspaces operate (specifically RStudio - see [FAQ](#q4-my-rstudio-workspaces-keep-refreshing-on-their-own)), you may not be able have multiple Workspaces open during a quiz. In the future, Workspaces may be switched to a singular IDE for both languages (Python and R). Until then, the recommended solution for courses requiring RStudio workspaces is to create a scratchpad question. The existing course specific workspace images have been designed to work in this instance. Therefore, the only changes required are in the course repository. Please see the appropriate heading for scratchpads in the [Instructor Guide](https://github.com/UBC-MDS/prairielearn-instructor-guide) for how to configure a scratchpad.
+
 #### External Autograder
 
 PrairieLearn also has the capability to use Docker images to grade questions, typically those involving user created code. Similar to their workspaces images, the PrairieLearn team provides their own images for [Python](https://hub.docker.com/r/prairielearn/grader-python) and [R](https://hub.docker.com/r/prairielearn/grader-r) among [other languages](https://hub.docker.com/u/prairielearn). This repository contains the Dockerfiles utilised in our courses that are based upon these images but install additional packages that are not already include (e.g. infer).
@@ -50,7 +54,9 @@ Currently we provided two base images, one for [Python](./base-python/) and one 
 
 ### Updating a Base Workspace Image
 
-If a requirement changes that affects all courses, such as changing a dataset or implementing a new version of a package, you will need to update the base image accordingly. These instructions presume that a base image was already [created](#creating-a-new-base-image) at some point.
+If a requirement changes that affects all courses, such as changing a dataset or implementing a new version of a package, you will need to update the base image accordingly. These instructions presume that a base image was already [created](#creating-a-new-base-image) at some point. 
+
+**Note:** updating a base image will require you to update all courses that use this image to a new tag. Please only update base images if *absolutely necessary*.
 
 #### Instructions
 1. Locate the Dockerfile of the relevant image
@@ -201,5 +207,8 @@ Here are some frequently asked questions when using this repository.
 > A2. You may need to update the flowchart using [Update Flowchart](#updating-the-flowchart) instructions 
 
 ##### Q3. Why do .md files open in Preview by default in Jupyter
-> A3. To allow for instructions to be loaded in Scratchpad workspaces, the `base-python/plugin.jupyterlab-settings` file has the setting specified to set this.
+> A3. To allow for instructions to be loaded in Scratchpad workspaces, the `base-python/plugin.jupyterlab-settings` file has the setting specified to set this
+
+##### Q4. My RStudio workspaces keep refreshing on their own
+> Due to the limitaitons of RStudio, you can only keep one RStudio tab open at a time. See the [PL Issue](https://github.com/PrairieLearn/PrairieLearn/issues/10498) for further details
 
