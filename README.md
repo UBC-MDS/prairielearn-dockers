@@ -200,5 +200,6 @@ Here are some frequently asked questions when using this repository.
 ##### Q2. The flowchart does not have what I am looking for
 > A2. You may need to update the flowchart using [Update Flowchart](#updating-the-flowchart) instructions 
 
-
+##### Q3. Why do .md files open in Preview by default in Jupyter
+> A3. To allow for instructions to be loaded in Scratchpad workspaces, the `base-python/plugin.jupyterlab-settings` file has the setting specified to set this.
 
