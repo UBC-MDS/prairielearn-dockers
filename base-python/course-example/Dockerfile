@@ -1,5 +1,5 @@
 # Use the base image provided by MDS
-FROM zacwarham/no-jedi:one
+FROM base-python:6acbbd2
 
 # Define additional packages that are specific to this course
 ENV PYTHON_PACKAGES="scipy"
