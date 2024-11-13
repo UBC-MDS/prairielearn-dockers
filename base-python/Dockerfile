@@ -1,5 +1,5 @@
 # Use the prairielearn modified version of jupyter lab
-FROM prairielearn/workspace-jupyterlab-python:92c4d45d172f248640753e49dd6e4557431e3495
+FROM prairielearn/workspace-jupyterlab-python:053e561ec8c268097e844a030ebbadb7afc276ec
 
 # root required to install for ubuntu commands
 USER root
@@ -20,8 +20,13 @@ USER jovyan
 # eg.
 # RUN pip install --no-cache-dir $PYTHON_PACKAGES
 
-# Create directories for user settings
-RUN mkdir -p /tmp/jupyter_config/lab/user-settings/@jupyterlab/docmanager-extension/
+# Set auto-save interval
+RUN sed -i '/"autosaveInterval": {/,/}/ s/"default": [0-9]*/"default": 1/' /opt/conda/share/jupyter/lab/schemas/@jupyterlab/docmanager-extension/plugin.json
+RUN sed -i '/"autosaveInterval": {/,/}/ s/"default": [0-9]*/"default": 1/' /opt/conda/lib/python3.11/site-packages/jupyterlab/schemas/@jupyterlab/docmanager-extension/plugin.json
 
-# Copy the custom plugin.jupyterlab-settings file to the correct location to increase auto-save frequency
-COPY plugin.jupyterlab-settings /tmp/jupyter_config/lab/user-settings/@jupyterlab/docmanager-extension/
+# Set default viewer for instructions
+RUN sed -i '/"defaultViewers": {/,/}/ s/"default": {[^}]*}/"default": {"markdown": "Markdown Preview"}/' /opt/conda/share/jupyter/lab/schemas/@jupyterlab/docmanager-extension/plugin.json
+RUN sed -i '/"defaultViewers": {/,/}/ s/"default": {[^}]*}/"default": {"markdown": "Markdown Preview"}/' /opt/conda/lib/python3.11/site-packages/jupyterlab/schemas/@jupyterlab/docmanager-extension/plugin.json
+
+# Disable jedi for autocomplete
+COPY ipython_config.py /etc/ipython/
