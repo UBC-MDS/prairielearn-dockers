@@ -21,7 +21,8 @@ RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 # https://stackoverflow.com/questions/75511508/how-to-stop-this-message-would-you-like-to-receive-official-jupyter-news
 RUN jupyter labextension disable @jupyterlab/apputils-extension:announcements
 RUN mamba install --yes \
-    'altair-all' \
+    'altair-all==5.4.1' \
+    'vegafusion==1.6.9' \
     'vega_datasets' \
     'python>=3.11,<3.13' \
     'pip' \
