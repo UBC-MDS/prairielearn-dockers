@@ -1,5 +1,4 @@
 # This is the temporary location until it is moved to our repo or the PL repo
-# Version eight is the autocomplete version
 FROM zacwarham/eric-gittu-zac:eight
 
 USER root
