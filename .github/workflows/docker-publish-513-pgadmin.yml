@@ -31,7 +31,7 @@ jobs:
         with:
           images: ubcmds/513-pgadmin
           tags: |
-            type=raw, value=pythonRebuild
+            type=raw, value={{sha}},enable=${{github.ref_type != 'tag' }}
             type=raw, value=latest
       
       - name: Build and push Docker image
