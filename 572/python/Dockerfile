@@ -2,7 +2,7 @@
 FROM ubcmds/base-python:dd7ebe7
 
 # Define additional packages that are specific to this course
-ENV PYTHON_PACKAGES="scipy"
+ENV PYTHON_PACKAGES="scipy torch torchvision torchaudio torch-summary"
 
 # Install the pre-defined Python packages
 RUN pip install --no-cache-dir $PYTHON_PACKAGES
