@@ -2,7 +2,7 @@
 FROM ubcmds/base-r:891b93d
 
 # Define additional packages that are specific to this course
-ENV R_PACKAGES="COUNT glm2"
+ENV R_PACKAGES="msme MASS lattice sandwich COUNT glm2"
 
 # Install the pre-defined R packages
 RUN install2.r -e $R_PACKAGES
