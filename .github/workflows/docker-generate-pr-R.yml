@@ -1,4 +1,4 @@
-name: Update downstream Dockerfiles
+name: Update R Course Images
 
 on:
   workflow_run:
@@ -13,17 +13,24 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Read tag from repository variable
-        run: |
-          NEW_TAG="${{ vars.BASE_R_TAG }}"
-          echo "NEW_TAG=$NEW_TAG" >> $GITHUB_ENV
+      # ⬇ Download the artifact from Workflow 1
+      - name: Download base-r tag artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: base-r-tag
+          path: ./artifacts
 
+      - name: Load tag into env
+        run: echo "NEW_TAG=$(cat ./artifacts/image-tag.txt)" >> $GITHUB_ENV
+
+      # ⬇ Update dependent Dockerfiles
       - name: Update Dockerfiles
         run: |
           echo "Updating Dockerfiles with tag ${NEW_TAG}"
           grep -rl --exclude-dir=".git" "ubcmds/base-r:" . \
             | xargs sed -i "s|ubcmds/base-r:[a-zA-Z0-9._-]\+|ubcmds/base-r:${NEW_TAG}|g"
 
+      # ⬇ Commit & PR
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v6
         with:
@@ -31,5 +38,5 @@ jobs:
           branch: update/base-r-${{ env.NEW_TAG }}
           title: "Update base-r to ${{ env.NEW_TAG }}"
           body: |
-            This PR updates all Dockerfiles in the repo that reference `ubcmds/base-r`
+            This PR updates all Dockerfiles in the repo that reference `ubcmds/base-r` 
             to use the newly published tag `${{ env.NEW_TAG }}`.
