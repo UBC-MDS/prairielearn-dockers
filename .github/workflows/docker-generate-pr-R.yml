@@ -13,19 +13,22 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # 🆕 grab the tag that was pushed in the first workflow
-      - name: Get new base-r tag
-        run: |
-          echo "NEW_TAG=$(jq -r '.outputs["new-tag"]' <<< '${{ toJson(github.event.workflow_run) }}')" >> $GITHUB_ENV
+      - uses: actions/download-artifact@v4
+        with:
+          name: base-r-tag
+          path: .
 
-      # 🆕 find all Dockerfiles that use ubcmds/base-r and rewrite them
+      - name: Read tag
+        run: |
+          NEW_TAG=$(cat new-tag.txt)
+          echo "NEW_TAG=$NEW_TAG" >> $GITHUB_ENV
+
       - name: Update Dockerfiles
         run: |
           echo "Updating Dockerfiles with tag ${NEW_TAG}"
           grep -rl --exclude-dir=".git" "ubcmds/base-r:" . \
             | xargs sed -i "s|ubcmds/base-r:[a-zA-Z0-9._-]\+|ubcmds/base-r:${NEW_TAG}|g"
 
-      # create a branch and PR with the changes
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v6
         with:
@@ -35,3 +38,4 @@ jobs:
           body: |
             This PR updates all Dockerfiles in the repo that reference `ubcmds/base-r` 
             to use the newly published tag `${{ env.NEW_TAG }}`.
+
