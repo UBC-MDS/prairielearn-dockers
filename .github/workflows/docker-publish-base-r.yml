@@ -58,21 +58,12 @@ jobs:
       - name: Update Dockerfiles
         id: update_dockerfiles
         run: |
-          echo "Updating Dockerfiles with tag ubcmds/base-r:${{ env.SHORT_SHA }}"
-          
-          # Find files to update
           FILES=$(grep -rl --exclude-dir=".git" "ubcmds/base-r:" .)
-          echo "Files to update:"
-          echo "$FILES"
-          
-          # Update Dockerfiles
           echo "$FILES" | xargs sed -i "s|ubcmds/base-r:[a-zA-Z0-9._-]\+|ubcmds/base-r:${{ env.SHORT_SHA }}|g"
-          
-          # Format files as markdown bullet list
           BULLETS=$(echo "$FILES" | sed 's/^/- /')
-          
-          # Save bullet list for later step
-          echo "files=$BULLETS" >> $GITHUB_ENV
+          echo "files<<EOF" >> $GITHUB_OUTPUT
+          echo "$BULLETS" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
       
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v6
@@ -85,6 +76,5 @@ jobs:
             to use the newly published commit hash `${{ env.SHORT_SHA }}`.
       
             **Updated files:**
-            ${{ env.files }}
-          reviewers: zacwarham
-          labels: update
+            ${{ steps.update_dockerfiles.outputs.files }}
+      
