@@ -5,12 +5,12 @@
 
 name: Publish Docker image (Base R)
 
-on: 
+on:
   workflow_dispatch:
-  push: 
-    paths: 
+  push:
+    paths:
       - 'base-r/Dockerfile'
-      
+
 jobs:
   push_to_registry:
     name: Push Docker image to Docker Hub
@@ -18,13 +18,13 @@ jobs:
     steps:
       - name: Check out the repo
         uses: actions/checkout@v4
-      
+
       - name: Log in to Docker Hub
         uses: docker/login-action@f4ef78c080cd8ba55a85445d5b36e214a81df20a
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-      
+
       - name: Extract metadata (tags, labels) for Docker
         id: meta
         uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
@@ -33,7 +33,7 @@ jobs:
           tags: |
             type=raw, value={{sha}},enable=${{github.ref_type != 'tag' }}
             type=raw, value=latest
-      
+
       - name: Build and push Docker image
         uses: docker/build-push-action@3b5e8027fcad23fda98b2e3ac259d8d67585f671
         with:
@@ -44,21 +44,26 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
 
       - name: Debug tags value
-        run: | 
+        run: |
           echo "Tag value: ${{ steps.meta.outputs.tags }}"
-      
+
       - name: Debug grep output
         run: |
           grep -rl --exclude-dir=".git" "ubcmds/base-r:" .
-      
+
       - name: Update Dockerfiles
         run: |
           echo "Updating Dockerfiles with tag ${{ steps.meta.outputs.tags }}"
+          # Extract only the first tag value
+          TAG="${{ steps.meta.outputs.tags }}"
+          FIRST_TAG=$(echo "$TAG" | cut -d' ' -f1)  # Get the first tag from the list
+          echo "Using first tag: $FIRST_TAG"
+
           # Escape special characters for sed
-          SAFE_TAG="${{ steps.meta.outputs.tags }}"; SAFE_TAG=$(echo "$SAFE_TAG" | sed 's/[&/\]/\\&/g')
+          SAFE_TAG="$FIRST_TAG"; SAFE_TAG=$(echo "$SAFE_TAG" | sed 's/[&/\]/\\&/g')
           grep -rl --exclude-dir=".git" "ubcmds/base-r:" . \
             | xargs sed -i "s|ubcmds/base-r:[a-zA-Z0-9._-]\+|ubcmds/base-r:$SAFE_TAG|g"
-      
+
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v6
         with:
@@ -66,6 +71,5 @@ jobs:
           branch: update/base-r-${{ steps.meta.outputs.tags }}
           title: "Update base-r to ${{ steps.meta.outputs.tags }}"
           body: |
-            This PR updates all Dockerfiles in the repo that reference `ubcmds/base-r` 
+            This PR updates all Dockerfiles in the repo that reference `ubcmds/base-r`
             to use the newly published tag `${{ steps.meta.outputs.tags }}".
-
