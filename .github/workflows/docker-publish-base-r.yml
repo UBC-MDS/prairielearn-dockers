@@ -50,10 +50,11 @@ jobs:
 
       - name: Update Dockerfiles
         run: |
-          echo "Updating Dockerfiles with tag ${{ github.sha }}"
+          SHORT_SHA="${{ github.sha:0:7 }}"
+          echo "Updating Dockerfiles with tag ubcmds/base-r:${SHORT_SHA}"
           grep -rl --exclude-dir=".git" "ubcmds/base-r:" . \
-            | xargs sed -i "s|ubcmds/base-r:[a-zA-Z0-9._-]\+|ubcmds/base-r:${{ github.sha }}|g"
-      
+            | xargs sed -i "s|ubcmds/base-r:[a-zA-Z0-9._-]\+|ubcmds/base-r:${SHORT_SHA}|g"
+
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v6
         with:
@@ -61,6 +62,6 @@ jobs:
           branch: update/base-r-${{ github.sha }}
           title: "Update base-r to ${{ github.sha }}"
           body: |
-            This PR updates all Dockerfiles in the repo that reference `ubcmds/base-r` 
-            to use the newly published tag `${{ github.sha }}`.
+            This PR updates all Dockerfiles in the repo that reference `ubcmds/base-r`
+            to use the newly published commit hash `${{ github.sha }}`.
 
