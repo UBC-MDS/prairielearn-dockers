@@ -3,44 +3,64 @@
 # Can be triggered by either pushing a commit that changes the `Dockerfile`, 
 # or manually dispatching the workflow.
 
-name: Publish Docker image (Base R)
+name: Publish Docker image (Base R) and update dependents
 
 on: 
   workflow_dispatch:
   push: 
     paths: 
       - 'base-r/Dockerfile'
-      
+
 jobs:
-  push_to_registry:
-    name: Push Docker image to Docker Hub
+  push_and_update:
+    name: Build Docker image, push, and update dependents
     runs-on: ubuntu-latest
-    outputs:
-      new-tag: ${{ steps.meta.outputs.version }}   # expose the Docker tag as a job output
     steps:
       - name: Check out the repo
         uses: actions/checkout@v4
-      
+
       - name: Log in to Docker Hub
-        uses: docker/login-action@v4
+        uses: docker/login-action@f4ef78c080cd8ba55a85445d5b36e214a81df20a
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-      
+
       - name: Extract metadata (tags, labels) for Docker
         id: meta
-        uses: docker/metadata-action@v9
+        uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
         with:
           images: ubcmds/base-r
           tags: |
-            type=raw,value={{sha}},enable=${{ github.ref_type != 'tag' }}
-            type=raw,value=latest
-      
+            type=raw, value={{sha}},enable=${{github.ref_type != 'tag' }}
+            type=raw, value=latest
+
       - name: Build and push Docker image
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@3b5e8027fcad23fda98b2e3ac259d8d67585f671
         with:
           context: ./base-r
           file: base-r/Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+
+      # 🆕 Make the new tag available as an env variable
+      - name: Set new tag
+        run: echo "NEW_TAG=$(echo '${{ steps.meta.outputs.tags }}' | cut -d',' -f1)" >> $GITHUB_ENV
+
+      # 🆕 find all Dockerfiles that use ubcmds/base-r and rewrite them
+      - name: Update Dockerfiles
+        run: |
+          echo "Updating Dockerfiles with tag ${NEW_TAG}"
+          grep -rl --exclude-dir=".git" "ubcmds/base-r:" . \
+            | xargs sed -i "s|ubcmds/base-r:[a-zA-Z0-9._-]\+|ubcmds/base-r:${NEW_TAG}|g"
+
+      # 🆕 create a branch and PR with the changes
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v6
+        with:
+          commit-message: "chore: bump base-r to ${{ env.NEW_TAG }}"
+          branch: update/base-r-${{ env.NEW_TAG }}
+          title: "Update base-r to ${{ env.NEW_TAG }}"
+          body: |
+            This PR updates all Dockerfiles in the repo that reference `ubcmds/base-r` 
+            to use the newly published tag `${{ env.NEW_TAG }}`.
