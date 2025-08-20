@@ -13,26 +13,29 @@ on:
       
 jobs:
   push_to_registry:
+    name: Push Docker image to Docker Hub
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-
+      - name: Check out the repo
+        uses: actions/checkout@v4
+      
       - name: Log in to Docker Hub
-        uses: docker/login-action@v3
+        uses: docker/login-action@f4ef78c080cd8ba55a85445d5b36e214a81df20a
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-
+      
       - name: Extract metadata (tags, labels) for Docker
         id: meta
-        uses: docker/metadata-action@v5
+        uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
         with:
           images: ubcmds/base-r
           tags: |
-            type=sha,format=short
-
+            type=raw,value={{sha}},enable=${{ github.ref_type != 'tag' }}
+            type=raw,value=latest
+      
       - name: Build and push Docker image
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@3b5e8027fcad23fda98b2e3ac259d8d67585f671
         with:
           context: ./base-r
           file: base-r/Dockerfile
@@ -40,11 +43,10 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
-      # ✅ Update repository variable with new tag
-      - name: Update repo variable BASE_R_TAG
-        run: |
-          curl -X PATCH \
-            -H "Accept: application/vnd.github+json" \
-            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-            https://api.github.com/repos/${{ github.repository }}/actions/variables/BASE_R_TAG \
-            -d '{"value":"${{ steps.meta.outputs.version }}"}'
+      # ⬇ Save the computed tag(s) for downstream workflows
+      - name: Save image tag
+        run: echo "${{ steps.meta.outputs.version }}" > image-tag.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: base-r-tag
+          path: image-tag.txt
