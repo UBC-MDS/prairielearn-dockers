@@ -1,0 +1,37 @@
+name: Update R Course Images
+
+on:
+  workflow_run:
+    workflows: ["Publish Docker image (Base R)"]
+    types:
+      - completed
+
+jobs:
+  update-dependents:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      # 🆕 grab the tag that was pushed in the first workflow
+      - name: Get new base-r tag
+        run: |
+          echo "NEW_TAG=$(jq -r '.outputs["new-tag"]' <<< '${{ toJson(github.event.workflow_run) }}')" >> $GITHUB_ENV
+
+      # 🆕 find all Dockerfiles that use ubcmds/base-r and rewrite them
+      - name: Update Dockerfiles
+        run: |
+          echo "Updating Dockerfiles with tag ${NEW_TAG}"
+          grep -rl --exclude-dir=".git" "ubcmds/base-r:" . \
+            | xargs sed -i "s|ubcmds/base-r:[a-zA-Z0-9._-]\+|ubcmds/base-r:${NEW_TAG}|g"
+
+      # create a branch and PR with the changes
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v6
+        with:
+          commit-message: "chore: bump base-r to ${{ env.NEW_TAG }}"
+          branch: update/base-r-${{ env.NEW_TAG }}
+          title: "Update base-r to ${{ env.NEW_TAG }}"
+          body: |
+            This PR updates all Dockerfiles in the repo that reference `ubcmds/base-r` 
+            to use the newly published tag `${{ env.NEW_TAG }}`.
