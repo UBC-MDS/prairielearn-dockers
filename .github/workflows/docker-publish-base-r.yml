@@ -43,11 +43,21 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
+      - name: Debug tags value
+        run: | 
+          echo "Tag value: ${{ steps.meta.outputs.tags }}"
+      
+      - name: Debug grep output
+        run: |
+          grep -rl --exclude-dir=".git" "ubcmds/base-r:" .
+      
       - name: Update Dockerfiles
         run: |
           echo "Updating Dockerfiles with tag ${{ steps.meta.outputs.tags }}"
+          # Escape special characters for sed
+          SAFE_TAG="${{ steps.meta.outputs.tags }}"; SAFE_TAG=$(echo "$SAFE_TAG" | sed 's/[&/\]/\\&/g')
           grep -rl --exclude-dir=".git" "ubcmds/base-r:" . \
-            | xargs sed -i "s|ubcmds/base-r:[a-zA-Z0-9._-]\+|ubcmds/base-r:${{ steps.meta.outputs.tags }}|g"
+            | xargs sed -i "s|ubcmds/base-r:[a-zA-Z0-9._-]\+|ubcmds/base-r:$SAFE_TAG|g"
       
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v6
@@ -58,3 +68,4 @@ jobs:
           body: |
             This PR updates all Dockerfiles in the repo that reference `ubcmds/base-r` 
             to use the newly published tag `${{ steps.meta.outputs.tags }}".
+
