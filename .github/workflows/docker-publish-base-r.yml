@@ -58,9 +58,20 @@ jobs:
       - name: Update Dockerfiles
         id: update_dockerfiles
         run: |
-          FILES=$(grep -rl --exclude-dir=".git" "ubcmds/base-r:" .)
+          echo "Updating Dockerfiles with tag ubcmds/base-r:${{ env.SHORT_SHA }}"
+          
+          # Find only Dockerfiles
+          FILES=$(grep -rl --exclude-dir=".git" "ubcmds/base-r:" --include "Dockerfile" .)
+          echo "Files to update:"
+          echo "$FILES"
+          
+          # Update Dockerfiles
           echo "$FILES" | xargs sed -i "s|ubcmds/base-r:[a-zA-Z0-9._-]\+|ubcmds/base-r:${{ env.SHORT_SHA }}|g"
+          
+          # Format files as markdown bullet list
           BULLETS=$(echo "$FILES" | sed 's/^/- /')
+          
+          # Save as output for PR
           echo "files<<EOF" >> $GITHUB_OUTPUT
           echo "$BULLETS" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
@@ -77,4 +88,6 @@ jobs:
       
             **Updated files:**
             ${{ steps.update_dockerfiles.outputs.files }}
-      
+          reviewers: zacwarham
+          labels: update
+            
