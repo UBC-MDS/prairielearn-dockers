@@ -64,10 +64,10 @@ jobs:
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v6
         with:
-          commit-message: "chore: bump base-r to ${{ github.sha }}"
+          commit-message: "chore: bump base-r to ${{ env.SHORT_SHA }}"
           branch: update/base-r-${{ github.sha }}
-          title: "Update base-r to ${{ github.sha }}"
+          title: "Update base-r to ${{ env.SHORT_SHA }}"
           body: |
             This PR updates all Dockerfiles in the repo that reference `ubcmds/base-r`
-            to use the newly published commit hash `${{ github.sha }}`.
+            to use the newly published commit hash `${{ env.SHORT_SHA }}`.
 
