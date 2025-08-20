@@ -53,8 +53,8 @@ jobs:
         uses: peter-evans/create-pull-request@v6
         with:
           commit-message: "chore: bump base-r to ${{ steps.meta.outputs.tags }}"
-          branch: update/base-r-${{ steps.meta.outputs.tags }}}
+          branch: update/base-r-${{ steps.meta.outputs.tags }}
           title: "Update base-r to ${{ steps.meta.outputs.tags }}"
           body: |
             This PR updates all Dockerfiles in the repo that reference `ubcmds/base-r` 
-            to use the newly published tag `${{ steps.meta.outputs.tags }}`.
+            to use the newly published tag `${{ steps.meta.outputs.tags }}".
