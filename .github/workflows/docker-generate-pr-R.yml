@@ -1,4 +1,4 @@
-name: Update R Course Images
+name: Update downstream Dockerfiles
 
 on:
   workflow_run:
@@ -13,14 +13,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/download-artifact@v4
-        with:
-          name: base-r-tag
-          path: .
-
-      - name: Read tag
+      - name: Read tag from repository variable
         run: |
-          NEW_TAG=$(cat new-tag.txt)
+          NEW_TAG="${{ vars.BASE_R_TAG }}"
           echo "NEW_TAG=$NEW_TAG" >> $GITHUB_ENV
 
       - name: Update Dockerfiles
@@ -36,6 +31,5 @@ jobs:
           branch: update/base-r-${{ env.NEW_TAG }}
           title: "Update base-r to ${{ env.NEW_TAG }}"
           body: |
-            This PR updates all Dockerfiles in the repo that reference `ubcmds/base-r` 
+            This PR updates all Dockerfiles in the repo that reference `ubcmds/base-r`
             to use the newly published tag `${{ env.NEW_TAG }}`.
-
