@@ -11,11 +11,11 @@ RUN /bin/sh -c /rocker_scripts/install_tidyverse.sh
 USER rstudio
 
 # Define additional packages not included in rocker that are required for all courses
-# e.g.
+# eg.
 # ENV R_PACKAGES="nycflights13 gapminder palmerpenguins"
 
 # Install the pre-defined R packages
-# e.g. 
+# eg. 
 # RUN install2.r -e $R_PACKAGES
 
 # Copy the custom rstudio-prefs.json file to the correct location to enable auto-save
