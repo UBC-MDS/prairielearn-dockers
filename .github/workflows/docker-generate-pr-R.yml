@@ -11,26 +11,23 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
-      - uses: actions/checkout@v4
+      - name: Check out the repo
+        uses: actions/checkout@v4
 
-      # ⬇ Download the artifact from Workflow 1
-      - name: Download base-r tag artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: base-r-tag
-          path: ./artifacts
+      # ⬇ Get the new base-r tag from the upstream workflow output
+      - name: Get new base-r tag
+        run: |
+          NEW_TAG="${{ github.event.workflow_run.outputs['new-tag'] }}"
+          echo "NEW_TAG=$NEW_TAG" >> $GITHUB_ENV
 
-      - name: Load tag into env
-        run: echo "NEW_TAG=$(cat ./artifacts/image-tag.txt)" >> $GITHUB_ENV
-
-      # ⬇ Update dependent Dockerfiles
+      # ⬇ Update Dockerfiles
       - name: Update Dockerfiles
         run: |
           echo "Updating Dockerfiles with tag ${NEW_TAG}"
           grep -rl --exclude-dir=".git" "ubcmds/base-r:" . \
             | xargs sed -i "s|ubcmds/base-r:[a-zA-Z0-9._-]\+|ubcmds/base-r:${NEW_TAG}|g"
 
-      # ⬇ Commit & PR
+      # ⬇ Create Pull Request
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v6
         with:
