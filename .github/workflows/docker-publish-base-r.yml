@@ -48,12 +48,15 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
+      - name: Extract short SHA
+        id: short_sha
+        run: echo "SHORT_SHA=${{ github.sha }}" | cut -c1-7 >> $GITHUB_ENV
+
       - name: Update Dockerfiles
         run: |
-          SHORT_SHA="${{ github.sha:0:7 }}"
-          echo "Updating Dockerfiles with tag ubcmds/base-r:${SHORT_SHA}"
+          echo "Updating Dockerfiles with tag ubcmds/base-r:${{ env.SHORT_SHA }}"
           grep -rl --exclude-dir=".git" "ubcmds/base-r:" . \
-            | xargs sed -i "s|ubcmds/base-r:[a-zA-Z0-9._-]\+|ubcmds/base-r:${SHORT_SHA}|g"
+            | xargs sed -i "s|ubcmds/base-r:[a-zA-Z0-9._-]\+|ubcmds/base-r:${{ env.SHORT_SHA }}|g"
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v6
