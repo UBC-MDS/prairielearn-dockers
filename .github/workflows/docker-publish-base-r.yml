@@ -50,7 +50,10 @@ jobs:
 
       - name: Extract short SHA
         id: short_sha
-        run: echo "SHORT_SHA=${{ github.sha }}" | cut -c1-7 >> $GITHUB_ENV
+        run: |
+          SHORT_SHA=${{ github.sha }}
+          SHORT_SHA=${SHORT_SHA:0:7}
+          echo "SHORT_SHA=$SHORT_SHA" >> $GITHUB_ENV
 
       - name: Update Dockerfiles
         run: |
