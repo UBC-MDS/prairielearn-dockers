@@ -40,11 +40,11 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
-      # ✅ save the new tag into an artifact
-      - name: Save new tag for downstream workflows
-        run: echo "${{ steps.meta.outputs.version }}" > new-tag.txt
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: base-r-tag
-          path: new-tag.txt
+      # ✅ Update repository variable with new tag
+      - name: Update repo variable BASE_R_TAG
+        run: |
+          curl -X PATCH \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            https://api.github.com/repos/${{ github.repository }}/actions/variables/BASE_R_TAG \
+            -d '{"value":"${{ steps.meta.outputs.version }}"}'
