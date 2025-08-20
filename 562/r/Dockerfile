@@ -1,5 +1,5 @@
 # Use the base image provided by MDS
-FROM ubcmds/base-r:891b93d
+FROM ubcmds/base-r:c43b2dc
 
 # Define additional packages that are specific to this course
 ENV R_PACKAGES="AER lme4 survival SparseM datarium"
