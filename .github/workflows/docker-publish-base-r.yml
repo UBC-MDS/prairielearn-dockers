@@ -50,17 +50,17 @@ jobs:
 
       - name: Update Dockerfiles
         run: |
-          echo "Updating Dockerfiles with tag ${sha}"
+          echo "Updating Dockerfiles with tag ${{ github.sha }}"
           grep -rl --exclude-dir=".git" "ubcmds/base-r:" . \
-            | xargs sed -i "s|ubcmds/base-r:[a-zA-Z0-9._-]\+|ubcmds/base-r:${sha}|g"
-
-      # ⬇ Create Pull Request
+            | xargs sed -i "s|ubcmds/base-r:[a-zA-Z0-9._-]\+|ubcmds/base-r:${{ github.sha }}|g"
+      
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v6
         with:
-          commit-message: "chore: bump base-r to ${{ sha }}"
-          branch: update/base-r-${{ sha }}
-          title: "Update base-r to ${{ sha }}"
+          commit-message: "chore: bump base-r to ${{ github.sha }}"
+          branch: update/base-r-${{ github.sha }}
+          title: "Update base-r to ${{ github.sha }}"
           body: |
             This PR updates all Dockerfiles in the repo that reference `ubcmds/base-r` 
-            to use the newly published tag `${{ sha }}`.
+            to use the newly published tag `${{ github.sha }}`.
+
