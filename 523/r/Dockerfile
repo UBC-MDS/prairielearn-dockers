@@ -1,5 +1,5 @@
 # Use the base image provided by MDS
-FROM ubcmds/base-r:a8ff64d
+FROM ubcmds/base-r:1fb7bd8
 
 # Define additional packages that are specific to this course
 ENV R_PACKAGES="nycflights13 gapminder"
