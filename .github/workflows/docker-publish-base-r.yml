@@ -14,8 +14,6 @@ on:
 jobs:
   push_to_registry:
     runs-on: ubuntu-latest
-    outputs:
-      new-tag: ${{ steps.meta.outputs.version }} # expose tag for downstream job
     steps:
       - uses: actions/checkout@v4
 
@@ -42,6 +40,11 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
-      - name: Save tag for downstream
-        run: echo "TAG=${{ steps.meta.outputs.version }}" >> $GITHUB_ENV
+      # ✅ save the new tag into an artifact
+      - name: Save new tag for downstream workflows
+        run: echo "${{ steps.meta.outputs.version }}" > new-tag.txt
 
+      - uses: actions/upload-artifact@v4
+        with:
+          name: base-r-tag
+          path: new-tag.txt
