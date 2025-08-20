@@ -70,4 +70,6 @@ jobs:
           body: |
             This PR updates all Dockerfiles in the repo that reference `ubcmds/base-r`
             to use the newly published commit hash `${{ env.SHORT_SHA }}`.
+          reviewers: zacwarham
+          labels: update
 
