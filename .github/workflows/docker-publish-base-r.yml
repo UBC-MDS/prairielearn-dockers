@@ -83,8 +83,7 @@ jobs:
           branch: update/base-r-${{ github.sha }}
           title: "Update base-r to ${{ env.SHORT_SHA }}"
           body: |
-            This PR updates all Dockerfiles in the repo that reference `ubcmds/base-r`
-            to use the newly published commit hash `${{ env.SHORT_SHA }}`.
+            This PR updates all Dockerfiles in the repo that reference [ubcmds/base-r](https://hub.docker.com/r/ubcmds/base-r/tags) to use the newly published commit hash ${{ env.SHORT_SHA }}.
       
             **Updated files:**
             ${{ steps.update_dockerfiles.outputs.files }}
