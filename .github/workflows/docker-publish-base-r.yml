@@ -1,10 +1,9 @@
 # Publishes docker image, pinning actions to a commit SHA,
 # and updating most recently built image with the latest tag.
-# Can be triggered by either pushing a commit that changes the `Dockerfile`, 
-# or manually dispatching the workflow.
-
-# Publishes docker image, pinning actions to a commit SHA,
-# and updating most recently built image with the latest tag.
+#
+# Then creates a PR to update all the course images to use this 
+# new image and submits to Zac Warham for review
+#
 # Can be triggered by either pushing a commit that changes the `Dockerfile`, 
 # or manually dispatching the workflow.
 
