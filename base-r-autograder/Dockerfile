@@ -1,1 +1,2 @@
+# Used to pin the version of the grader for the start of term
 FROM prairielearn/grader-r:1f2ac892cc9420ac44bb0af7b3d604f8fb0e585d
