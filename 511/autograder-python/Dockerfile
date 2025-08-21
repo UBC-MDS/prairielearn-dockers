@@ -1,5 +1,5 @@
 # Use the prairielearn r autograder
-FROM prairielearn/grader-python:latest
+FROM ubcmds/base-python-autograder:a1e67f6
 
 # Define additional packages not included in Python that are required for all courses
 # eg.
