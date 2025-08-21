@@ -1,0 +1,91 @@
+# Publishes docker image, pinning actions to a commit SHA,
+# and updating most recently built image with the latest tag.
+#
+# Then creates a PR to update all the course images to use this 
+# new image and submits to Zac Warham for review
+#
+# Can be triggered by either pushing a commit that changes the `Dockerfile`, 
+# or manually dispatching the workflow.
+
+name: Publish Docker image (Base Python Autograder)
+
+on: 
+  workflow_dispatch:
+  push: 
+    paths: 
+      - 'base-python-autograder/Dockerfile'
+      
+jobs:
+  push_to_registry:
+    name: Push Docker image to Docker Hub
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+      
+      - name: Log in to Docker Hub
+        uses: docker/login-action@f4ef78c080cd8ba55a85445d5b36e214a81df20a
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
+        with:
+          images: ubcmds/base-python-autograder
+          tags: |
+            type=raw, value={{sha}},enable=${{github.ref_type != 'tag' }}
+            type=raw, value=latest
+      
+      - name: Build and push Docker image
+        uses: docker/build-push-action@3b5e8027fcad23fda98b2e3ac259d8d67585f671
+        with:
+          context: ./base-python-autograder
+          file: base-python-autograder/Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+      - name: Extract short SHA
+        id: short_sha
+        run: |
+          SHORT_SHA=${{ github.sha }}
+          SHORT_SHA=${SHORT_SHA:0:7}
+          echo "SHORT_SHA=$SHORT_SHA" >> $GITHUB_ENV
+
+      - name: Update Dockerfiles
+        id: update_dockerfiles
+        run: |
+          echo "Updating Dockerfiles with tag ubcmds/base-python-autograder:${{ env.SHORT_SHA }}"
+          
+          # Find only Dockerfiles
+          FILES=$(grep -rl --exclude-dir=".git" "ubcmds/base-python-autograder:" --include "Dockerfile" .)
+          echo "Files to update:"
+          echo "$FILES"
+          
+          # Update Dockerfiles
+          echo "$FILES" | xargs sed -i "s|ubcmds/base-python-autograder:[a-zA-Z0-9._-]\+|ubcmds/base-python-autograder:${{ env.SHORT_SHA }}|g"
+          
+          # Format files as markdown bullet list
+          BULLETS=$(echo "$FILES" | sed 's/^/- /')
+          
+          # Save as output for PR
+          echo "files<<EOF" >> $GITHUB_OUTPUT
+          echo "$BULLETS" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+      
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v6
+        with:
+          commit-message: "chore: bump base-python-autograder to ${{ env.SHORT_SHA }}"
+          branch: update/base-python-autograder-${{ github.sha }}
+          title: "Update base-python-autograder to ${{ env.SHORT_SHA }}"
+          body: |
+            This PR updates all Dockerfiles in the repo that reference [ubcmds/base-python-autograder](https://hub.docker.com/r/ubcmds/base-python-autograder/tags) to use the newly published commit hash ${{ env.SHORT_SHA }}.
+      
+            **Updated files:**
+            ${{ steps.update_dockerfiles.outputs.files }}
+          reviewers: zacwarham
+          labels: update
+            
