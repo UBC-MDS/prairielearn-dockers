@@ -11,11 +11,11 @@ RUN apt-get update && apt-get install -y \
 
 # Set auto-save interval
 RUN sed -i '/"autosaveInterval": {/,/}/ s/"default": [0-9]*/"default": 1/' /opt/conda/share/jupyter/lab/schemas/@jupyterlab/docmanager-extension/plugin.json
-RUN sed -i '/"autosaveInterval": {/,/}/ s/"default": [0-9]*/"default": 1/' /opt/conda/lib/python3.11/site-packages/jupyterlab/schemas/@jupyterlab/docmanager-extension/plugin.json
+RUN sed -i '/"autosaveInterval": {/,/}/ s/"default": [0-9]*/"default": 1/' /opt/conda/lib/python3.12/site-packages/jupyterlab/schemas/@jupyterlab/docmanager-extension/plugin.json
 
 # Set default viewer for instructions
 RUN sed -i '/"defaultViewers": {/,/}/ s/"default": {[^}]*}/"default": {"markdown": "Markdown Preview"}/' /opt/conda/share/jupyter/lab/schemas/@jupyterlab/docmanager-extension/plugin.json
-RUN sed -i '/"defaultViewers": {/,/}/ s/"default": {[^}]*}/"default": {"markdown": "Markdown Preview"}/' /opt/conda/lib/python3.11/site-packages/jupyterlab/schemas/@jupyterlab/docmanager-extension/plugin.json
+RUN sed -i '/"defaultViewers": {/,/}/ s/"default": {[^}]*}/"default": {"markdown": "Markdown Preview"}/' /opt/conda/lib/python3.12/site-packages/jupyterlab/schemas/@jupyterlab/docmanager-extension/plugin.json
 
 # jovyan is the default user for jupyter lab
 USER jovyan
