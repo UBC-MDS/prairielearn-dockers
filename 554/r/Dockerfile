@@ -1,5 +1,5 @@
 # Use the base image provided by MDS
-FROM ubcmds/base-r:d47f9cb
+FROM ubcmds/base-r:407cb8d
 
 # Define additional packages that are specific to this course
 ENV R_PACKAGES="broom pwr MASS qqman dplyr"
