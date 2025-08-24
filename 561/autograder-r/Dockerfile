@@ -1,5 +1,5 @@
 # Use the prairielearn r autograder
-FROM ubcmds/base-r-autograder:7c3a8ec
+FROM ubcmds/base-r-autograder:407cb8d
 
 # Ensure all critical dependencies are up-to-date
 RUN R -e "install.packages(c('rlang', 'vctrs', 'tidyselect', 'pillar', 'cli', 'lifecycle', 'glue', 'tibble', 'purrr', 'ellipsis', 'ISLR', 'leaps'), repos='https://cloud.r-project.org/')"
