@@ -1,5 +1,5 @@
 # Use the base image provided by MDS
-FROM ubcmds/base-python:d86d14f
+FROM ubcmds/base-python:407cb8d
 
 # Define additional packages that are specific to this course
 ENV PYTHON_PACKAGES="altair vega_datasets"
