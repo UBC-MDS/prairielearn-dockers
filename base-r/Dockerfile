@@ -1,4 +1,5 @@
 # Use the prairielearn modified version of rocker
+# Pinned to 2025-08-24
 FROM prairielearn/workspace-rstudio:b4e17a7c01edcf83ff57cb6f250191bc3d0161e0
 
 # root required to install rocker scripts - https://github.com/rocker-org/rocker-versioned2/tree/master/scripts
