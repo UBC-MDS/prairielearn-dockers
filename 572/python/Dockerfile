@@ -1,5 +1,5 @@
 # Use the base image provided by MDS
-FROM ubcmds/base-python:d86d14f
+FROM ubcmds/base-python:ca65eda
 
 # Define additional packages that are specific to this course
 ENV PYTHON_PACKAGES="scipy torch torchvision torchaudio torch-summary"
