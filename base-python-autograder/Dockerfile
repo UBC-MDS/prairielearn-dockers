@@ -1,2 +1,2 @@
 # Used to pin the version of the grader for the start of term
-FROM prairielearn/grader-python:93d6ea280c5ece136bc3da0c13c2ecca22bedb92
+FROM prairielearn/grader-python:17dae10c6ffd1e8bce5ef7fe24b43228a4fee6b6
