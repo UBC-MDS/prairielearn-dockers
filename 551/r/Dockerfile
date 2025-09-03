@@ -1,0 +1,10 @@
+# Use the base image provided by MDS
+FROM ubcmds/base-r:407cb8d
+
+# Define additional packages that are specific to this course
+ENV R_PACKAGES="nycflights13 gapminder"
+
+# Install the pre-defined R packages
+RUN install2.r -e $R_PACKAGES
+
+# End course image
