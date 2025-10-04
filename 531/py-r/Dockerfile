@@ -1,29 +1,23 @@
-FROM jupyter/minimal-notebook:2023-10-20
+FROM prairielearn/workspace-jupyterlab-r:2ad06f29fd46a734f8c5aa8267a26a94b3a36bb1
 
-ENV XDG_DATA_HOME=/tmp/local/share
-ENV XDG_CACHE_HOME=/tmp/cache
-ENV XDG_CONFIG_HOME=/tmp/config
-ENV JUPYTER_RUNTIME_DIR /tmp/runtime
-ENV JUPYTER_ALLOW_INSECURE_WRITES true
-ENV JUPYTER_CONFIG_DIR=/tmp/jupyter_config
-ENV NPM_CONFIG_CACHE=/tmp/npm
-ENV NO_UPDATE_NOTIFIER=true
-ENV IPYTHONDIR=/tmp/ipython
-ENV YARN_CACHE_FOLDER=/tmp/yarn_cache
+# For 531 we do not actually want to hide it like it is in PL
+RUN echo 'c.KernelSpecManager.allowed_kernelspecs = {"python3", "ir"}' >> /etc/jupyter/jupyter_server_config.py
 
 USER root
-# Install dependencies and various libraries
+
+# Update before installing packages
 RUN apt-get update && apt-get -y upgrade
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Suppress the opt-in dialog for announcements.  
 # https://stackoverflow.com/questions/75511508/how-to-stop-this-message-would-you-like-to-receive-official-jupyter-news
 RUN jupyter labextension disable @jupyterlab/apputils-extension:announcements
+
+# Install dependencies and various libraries
 RUN mamba install --yes \
     'altair-all' \
     'vega_datasets' \
     'otter-grader' \
-    'r-base>=4.1' \
     'r-essentials' \
     'r-devtools' \
     'r-gert' \
@@ -37,8 +31,7 @@ RUN mamba install --yes \
     'r-rjson' \
     'r-ggally' \
     'r-ggthemes' \
-    'r-cowplot' \
-    'r-irkernel' && \
+    'r-cowplot' && \
     mamba clean --all -f -y && \
     fix-permissions "${CONDA_DIR}" && \
     fix-permissions "/home/${NB_USER}"
@@ -50,7 +43,4 @@ RUN mamba install --yes \
 RUN python -m pip install anywidget
 RUN pip3 cache purge
 
-COPY jupyter_server_config.py /etc/jupyter/
-
 USER jovyan
-CMD ["start.sh", "jupyter", "lab"]
