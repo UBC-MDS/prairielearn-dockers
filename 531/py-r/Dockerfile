@@ -1,9 +1,9 @@
 FROM prairielearn/workspace-jupyterlab-r:2ad06f29fd46a734f8c5aa8267a26a94b3a36bb1
 
+USER root
+
 # For 531 we do not actually want to hide it like it is in PL
 RUN echo 'c.KernelSpecManager.allowed_kernelspecs = {"python3", "ir"}' >> /etc/jupyter/jupyter_server_config.py
-
-USER root
 
 # Update before installing packages
 RUN apt-get update && apt-get -y upgrade
