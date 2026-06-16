@@ -1,5 +1,5 @@
 # Use the prairielearn r autograder
-FROM ubcmds/base-r:407cb8d
+FROM ubcmds/base-r:629336e
 
 # Define additional packages that are specific to this course
 ENV R_PACKAGES="infer palmerpenguins faraway"
