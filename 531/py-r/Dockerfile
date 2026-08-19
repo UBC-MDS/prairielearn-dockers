@@ -1,4 +1,5 @@
-FROM prairielearn/workspace-jupyterlab-r:2ad06f29fd46a734f8c5aa8267a26a94b3a36bb1
+# Pinned to 2026-08-19
+FROM prairielearn/workspace-jupyterlab-r:faa2970966778540ebc8fca8a5abe5096d36969e
 
 USER root
 
