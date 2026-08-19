@@ -4,7 +4,9 @@ This repository is intended as a collection of Docker Images that are used by th
 
 #### Workspaces
 
-PrairieLearn Workspaces require a Docker image with the relevant IDE and languages installed. The PrairieLearn team provides a base image for both [Python (with Jupyter Lab)](https://hub.docker.com/r/prairielearn/workspace-jupyterlab-python) and [R (with RStudio)](https://hub.docker.com/r/prairielearn/workspace-rstudio). This repository contains the MDS base Dockerfile which provides some additional configuration requirements that are standard across all courses (namely, autosave functionality) for both images. It also contains course specific Dockerfiles to allow instructors to install packages that are specific for that course (e.g. SciPy or palmerpenguins).
+PrairieLearn Workspaces require a Docker image with the relevant IDE and languages installed. The PrairieLearn team provides base images for [Python (with Jupyter Lab)](https://hub.docker.com/r/prairielearn/workspace-jupyterlab-python), [R (with JupyterHub)](https://hub.docker.com/r/prairielearn/workspace-jupyterlab-r), and [R (with RStudio)](https://hub.docker.com/r/prairielearn/workspace-rstudio). This repository contains an additional MDS base Dockerfiles which provides some further configuration requirements that are standard across all courses (namely, autosave functionality) for each of these images. It also contains course specific Dockerfiles to allow instructors to install packages that are specific for that course (e.g. SciPy or palmerpenguins).
+
+We also maintain our own workspace specifically for 513 that utilises pgadmin4 and PostgreSQL.
 
 #### Scratchpads
 
