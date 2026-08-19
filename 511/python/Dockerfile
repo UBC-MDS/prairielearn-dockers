@@ -1,5 +1,5 @@
 # Use the base image provided by MDS
-FROM ubcmds/base-python:407cb8d
+FROM ubcmds/base-python:150754e
 
 # Switch to root to install packages
 USER root
