@@ -1,4 +1,4 @@
-FROM ubcmds/base-postgresql:d4f4f8e
+FROM ubcmds/base-postgresql:108f72f
 
 USER root
 
