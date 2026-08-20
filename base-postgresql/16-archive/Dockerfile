@@ -1,3 +1,4 @@
+# Based on https://github.com/ZacWarham/PrairieLearn/tree/pgadmin_postgresql
 FROM ubuntu:22.04
 
 RUN groupadd -r postgres && useradd -r -g postgres -m -d /home/postgres postgres \
