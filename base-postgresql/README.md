@@ -1,12 +1,6 @@
-# Archival Note
+# pgadmin and postgres Workspace
 
-This is being kept as a snapshot for [Eric Huber](https://github.com/echuber2) so that they will have access to a copy of this work which includes code they put together for us. Do not delete the `/16` directory without consulting with them first.
-
-All future revisions which will be modified from this will exist one level up.
-
-## pgadmin and postgres Workspace
-
-This workspace provides a [pgadmin 4 8.14](https://www.pgadmin.org/docs/pgadmin4/8.14/index.html) frontend to a [postgresql 16](https://www.postgresql.org/docs/16/release-16.html) database for use in PrairieLearn. Once loaded, pgadmin will open and automatically connect to an empty database called `postgres`. You have a few options to create data inside for students.
+This workspace provides a [pgadmin 4 9.17](https://www.pgadmin.org/docs/pgadmin4/9.17/index.html) frontend to a [postgresql 18](https://www.postgresql.org/docs/18/release-18.html) database for use in PrairieLearn. Once loaded, pgadmin will open and automatically connect to an empty database called `postgres`. You have a few options to create data inside for students.
 
 1. **Not recommended:** At build of this image by including in the `/database` directory (this is empty due to make this a general image for all)
 2. **Recommended:** By creating your own Dockerfile using this image as a base (see `/extensions` directory for an example)
@@ -22,3 +16,7 @@ This image will log all queries made by the student inside the `/pgdata/log` dir
 - Autosaving is **not enabled** in this workspace. Make sure this is clear for students using this.
 - No `postgresql` external grader is provided. You will need to create your own or build questions around the other autograders provided by the PrairieLearn team.
 - Special thanks to [Eric](https://github.com/echuber2) for helping get this over the line for working in PrairieLearn.
+
+#### AI Acknowledgement
+
+Copilot was used to help update this to postgresql 18.

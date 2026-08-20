@@ -7,13 +7,13 @@
 # Can be triggered by either pushing a commit that changes the `Dockerfile`, 
 # or manually dispatching the workflow.
 
-name: Publish Docker image (Base PostgreSQL)
+name: Publish Docker image (Base PostgreSQL 18)
 
 on: 
   workflow_dispatch:
   push: 
     paths: 
-      - 'base-postgresql/16-archive/Dockerfile'
+      - 'base-postgresql/Dockerfile'
       
 jobs:
   push_to_registry:
@@ -41,8 +41,8 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@3b5e8027fcad23fda98b2e3ac259d8d67585f671
         with:
-          context: ./base-postgresql/16-archive
-          file: base-postgresql/16-archive/Dockerfile
+          context: ./base-postgresql
+          file: base-postgresql/Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
