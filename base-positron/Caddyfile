@@ -1,0 +1,24 @@
+{
+    admin off
+    auto_https off
+    http_port 8080
+}
+
+:8080 {
+    log {
+        output stderr
+        format console
+    }
+    @root path_regexp ^{$ADJUSTED_BASE_URL}/?$
+    rewrite @root {$ADJUSTED_BASE_URL}/user/jovyan/positron/
+    @app {
+        path_regexp app ^{$ADJUSTED_BASE_URL}(/.*)$
+        not path_regexp ^{$ADJUSTED_BASE_URL}/(user|hub|services)/
+    }
+    rewrite @app {$ADJUSTED_BASE_URL}/user/jovyan/positron{re.app.1}
+    reverse_proxy localhost:8000 {
+        header_up Authorization "token {$CADDY_HUB_TOKEN}"
+        header_up Cookie "vscode-tkn={$POSITRON_CONNECTION_TOKEN}"
+        header_down Location ^{$ADJUSTED_BASE_URL}/user/jovyan/positron(.*)$ {$ADJUSTED_BASE_URL}$1
+    }
+}
