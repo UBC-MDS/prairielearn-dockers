@@ -63,11 +63,10 @@ ENV POSITRON_LICENSE_SRC=/home/jovyan/.positron/license.lic
 
 # AI modified code from Eric Huber's Caddy config from 513 Postgres image
 COPY --from=caddy:2 /usr/bin/caddy /usr/local/bin/caddy
-
 COPY --chown=jovyan --chmod=0644 Caddyfile /caddy/Caddyfile
 
+# Additional config files
 COPY --chmod=0755 entrypoint.sh /usr/local/bin/entrypoint.sh
-
 COPY --chmod=0644 jupyterhub_config.py /srv/jupyterhub/jupyterhub_config.py
 
 USER ${NB_UID}
