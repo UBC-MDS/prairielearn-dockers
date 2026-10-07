@@ -4,7 +4,7 @@ This is a proof of concept workspace that leverages the [Jupyter Positron Server
 Unfortunately, due to Positron being a memory intensive IDE, it is not suitable for usage in PrairieLearn due to the memory limitations impose for each
 workspace runner.
 
-Positron server is a licensed software. You must request a license for the software and store the `license.lic` within the `clientFilesDirectory` of the
+Positron server is a licensed software. You must request a license for the software and store the `license.lic` within the `clientFilesQuestion` of the
 workspace question for this to launch. Note, this means the license is accessible to students from the workspace and can be a security risk for the file.
 
 ## Example Question Files
