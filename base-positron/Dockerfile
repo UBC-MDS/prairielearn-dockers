@@ -69,6 +69,9 @@ COPY --chown=jovyan --chmod=0644 Caddyfile /caddy/Caddyfile
 COPY --chmod=0755 entrypoint.sh /usr/local/bin/entrypoint.sh
 COPY --chmod=0644 jupyterhub_config.py /srv/jupyterhub/jupyterhub_config.py
 
+# Default Positron user settings (AI features off)
+COPY --chown=${NB_UID}:${NB_GID} --chmod=0644 settings.json /home/jovyan/.positron-server/data/User/settings.json
+
 USER ${NB_UID}
 WORKDIR /srv/jupyterhub
 EXPOSE 8080
