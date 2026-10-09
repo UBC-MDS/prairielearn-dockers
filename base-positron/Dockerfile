@@ -36,7 +36,9 @@ RUN set -eux; \
         "${POSITRON_SERVER_DIR}"/extensions/bootstrap/posit.shiny-*.vsix \
         "${POSITRON_SERVER_DIR}"/extensions/bootstrap/meta.pyrefly-*.vsix \
         "${POSITRON_SERVER_DIR}"/extensions/bootstrap/posit.air-vscode-*.vsix \
-        "${POSITRON_SERVER_DIR}"/extensions/bootstrap/quarto.quarto-*.vsix
+        "${POSITRON_SERVER_DIR}"/extensions/bootstrap/quarto.quarto-*.vsix; \
+    find "${POSITRON_SERVER_DIR}" -type d -iname 'github.copilot-chat*' -prune -exec rm -rf {} +; \
+    find "${POSITRON_SERVER_DIR}" -type f -iname 'github.copilot-chat*.vsix' -delete
 
 
 # Configuration to control activation server with Caddy
