@@ -69,8 +69,12 @@ COPY --chown=jovyan --chmod=0644 Caddyfile /caddy/Caddyfile
 COPY --chmod=0755 entrypoint.sh /usr/local/bin/entrypoint.sh
 COPY --chmod=0644 jupyterhub_config.py /srv/jupyterhub/jupyterhub_config.py
 
-# Default Positron user settings (AI features off)
-COPY --chown=${NB_UID}:${NB_GID} --chmod=0644 settings.json /home/jovyan/.positron-server/data/User/settings.json
+# Default Positron user settings (AI features off). Kept outside /home/jovyan
+# because PrairieLearn mounts the workspace over the home directory.
+ENV VSCODE_AGENT_FOLDER=/opt/positron-data
+RUN mkdir -p "${VSCODE_AGENT_FOLDER}/data/User" && \
+    chmod -R a+rwX "${VSCODE_AGENT_FOLDER}"
+COPY --chmod=0666 settings.json ${VSCODE_AGENT_FOLDER}/data/User/settings.json
 
 USER ${NB_UID}
 WORKDIR /srv/jupyterhub
