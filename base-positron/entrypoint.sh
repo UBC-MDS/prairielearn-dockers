@@ -12,6 +12,23 @@ else
   echo "WARNING: ${POSITRON_LICENSE_SRC} not found; Positron will be unlicensed" >&2
 fi
 
+USER_SETTINGS="${HOME}/.positron-server/data/User/settings.json"
+mkdir -p "$(dirname "${USER_SETTINGS}")"
+python3 - "${USER_SETTINGS}" "${POSITRON_DEFAULT_SETTINGS}" <<'PY'
+import json, sys
+target, defaults = sys.argv[1:3]
+try:
+    with open(target) as f:
+        current = json.load(f)
+except (OSError, ValueError):
+    current = {}
+with open(defaults) as f:
+    for key, value in json.load(f).items():
+        current.setdefault(key, value)
+with open(target, "w") as f:
+    json.dump(current, f, indent=4)
+PY
+
 HUB="http://localhost:8000${ADJUSTED_BASE_URL}"
 
 jupyterhub -f /srv/jupyterhub/jupyterhub_config.py &

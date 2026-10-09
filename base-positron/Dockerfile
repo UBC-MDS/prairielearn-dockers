@@ -69,12 +69,11 @@ COPY --chown=jovyan --chmod=0644 Caddyfile /caddy/Caddyfile
 COPY --chmod=0755 entrypoint.sh /usr/local/bin/entrypoint.sh
 COPY --chmod=0644 jupyterhub_config.py /srv/jupyterhub/jupyterhub_config.py
 
-# Default Positron user settings (ai.enabled=false). Directories are created
-# owned by jovyan so Positron can write alongside settings.json.
-RUN mkdir -p /home/jovyan/.positron-server/data/User && \
-    chown -R ${NB_UID}:${NB_GID} /home/jovyan/.positron-server && \
-    chmod -R a+rwX /home/jovyan/.positron-server
-COPY --chown=${NB_UID}:${NB_GID} --chmod=0666 settings.json /home/jovyan/.positron-server/data/User/settings.json
+# Default Positron user settings (ai.enabled=false). PrairieLearn replaces
+# /home/jovyan at runtime, so entrypoint.sh merges this into the user's
+# settings.json on launch.
+ENV POSITRON_DEFAULT_SETTINGS=/opt/positron-default-settings.json
+COPY --chmod=0644 settings.json ${POSITRON_DEFAULT_SETTINGS}
 
 USER ${NB_UID}
 WORKDIR /srv/jupyterhub
