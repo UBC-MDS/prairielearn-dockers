@@ -69,7 +69,7 @@ COPY --chown=jovyan --chmod=0644 Caddyfile /caddy/Caddyfile
 COPY --chmod=0755 entrypoint.sh /usr/local/bin/entrypoint.sh
 COPY --chmod=0644 jupyterhub_config.py /srv/jupyterhub/jupyterhub_config.py
 
-# Default Positron user settings (ai.enabled=false). PrairieLearn replaces
+# Default Positron user settings. PrairieLearn replaces
 # /home/jovyan at runtime, so entrypoint.sh merges this into the user's
 # settings.json on launch.
 ENV POSITRON_DEFAULT_SETTINGS=/opt/positron-default-settings.json

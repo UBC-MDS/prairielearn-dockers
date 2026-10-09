@@ -1,3 +1,8 @@
 {
-    "ai.enabled": false
+    "ai.enabled": false,
+    "chat.disableAIFeatures": true,
+    "chat.agent.enabled": false,
+    "extensions.autoCheckUpdates": false,
+    "extensions.autoUpdate": false,
+    "telemetry.telemetryLevel": "off"
 }
