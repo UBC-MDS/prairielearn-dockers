@@ -69,12 +69,23 @@ COPY --chown=jovyan --chmod=0644 Caddyfile /caddy/Caddyfile
 COPY --chmod=0755 entrypoint.sh /usr/local/bin/entrypoint.sh
 COPY --chmod=0644 jupyterhub_config.py /srv/jupyterhub/jupyterhub_config.py
 
-# Default Positron user settings (AI features off). Kept outside /home/jovyan
-# because PrairieLearn mounts the workspace over the home directory.
-ENV VSCODE_AGENT_FOLDER=/opt/positron-data
-RUN mkdir -p "${VSCODE_AGENT_FOLDER}/data/User" && \
-    chmod -R a+rwX "${VSCODE_AGENT_FOLDER}"
-COPY --chmod=0666 settings.json ${VSCODE_AGENT_FOLDER}/data/User/settings.json
+# Default Positron settings (e.g. ai.enabled=false), baked into the server's
+# product.json as configurationDefaults so they apply even when the home
+# directory is replaced at runtime. Users can still override them.
+COPY settings.json /tmp/default-settings.json
+RUN python3 - <<'PY'
+import json, os
+path = os.path.join(os.environ["POSITRON_SERVER_DIR"], "product.json")
+with open(path) as f:
+    product = json.load(f)
+with open("/tmp/default-settings.json") as f:
+    defaults = json.load(f)
+product.setdefault("configurationDefaults", {}).update(defaults)
+with open(path, "w") as f:
+    json.dump(product, f, indent="\t")
+PY
+RUN rm -f /tmp/default-settings.json && \
+    grep -q '"ai.enabled": false' "${POSITRON_SERVER_DIR}/product.json"
 
 USER ${NB_UID}
 WORKDIR /srv/jupyterhub
