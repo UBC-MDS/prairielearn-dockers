@@ -69,23 +69,12 @@ COPY --chown=jovyan --chmod=0644 Caddyfile /caddy/Caddyfile
 COPY --chmod=0755 entrypoint.sh /usr/local/bin/entrypoint.sh
 COPY --chmod=0644 jupyterhub_config.py /srv/jupyterhub/jupyterhub_config.py
 
-# Default Positron settings (e.g. ai.enabled=false), baked into the server's
-# product.json as configurationDefaults so they apply even when the home
-# directory is replaced at runtime. Users can still override them.
-COPY settings.json /tmp/default-settings.json
-RUN python3 - <<'PY'
-import json, os
-path = os.path.join(os.environ["POSITRON_SERVER_DIR"], "product.json")
-with open(path) as f:
-    product = json.load(f)
-with open("/tmp/default-settings.json") as f:
-    defaults = json.load(f)
-product.setdefault("configurationDefaults", {}).update(defaults)
-with open(path, "w") as f:
-    json.dump(product, f, indent="\t")
-PY
-RUN rm -f /tmp/default-settings.json && \
-    grep -q '"ai.enabled": false' "${POSITRON_SERVER_DIR}/product.json"
+# Default Positron user settings (ai.enabled=false). Directories are created
+# owned by jovyan so Positron can write alongside settings.json.
+RUN mkdir -p /home/jovyan/.positron-server/data/User && \
+    chown -R ${NB_UID}:${NB_GID} /home/jovyan/.positron-server && \
+    chmod -R a+rwX /home/jovyan/.positron-server
+COPY --chown=${NB_UID}:${NB_GID} --chmod=0666 settings.json /home/jovyan/.positron-server/data/User/settings.json
 
 USER ${NB_UID}
 WORKDIR /srv/jupyterhub
