@@ -17,7 +17,7 @@ RUN jupyter labextension disable @jupyterlab/apputils-extension:announcements
 # Install dependencies and various libraries
 RUN mamba install --yes \
     'altair-all' \
-    'vega_datasets' \
+    'altair-ally' \
     'otter-grader' \
     'r-essentials' \
     'r-devtools' \
