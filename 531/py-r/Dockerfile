@@ -17,7 +17,6 @@ RUN jupyter labextension disable @jupyterlab/apputils-extension:announcements
 # Install dependencies and various libraries
 RUN mamba install --yes \
     'altair-all' \
-    'altair-ally' \
     'otter-grader' \
     'r-essentials' \
     'r-devtools' \
@@ -41,7 +40,7 @@ RUN mamba install --yes \
 # although the package is technically already installed as part of altair-all.
 # This package is needed to show altair charts offline, such as in CBTF.
 # Each notebook need to start with `alt.renderers.enable('jupyter', offline=True)`
-RUN python -m pip install anywidget
+RUN python -m pip install anywidget altair-ally
 RUN pip3 cache purge
 
 USER jovyan
